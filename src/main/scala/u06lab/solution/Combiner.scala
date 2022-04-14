@@ -12,9 +12,8 @@ object FunctionsImpl extends Functions:
   override def sum(a: List[Double]): Double = combine(a)
   override def concat(a: Seq[String]): String = combine(a)
   override def max(a: List[Int]): Int = combine(a)
-  private def combine[A: Combiner](a: Seq[A]): A = a match
-    case Nil => summon[Combiner[A]].unit
-    case h :: t => t.foldLeft(h)((acc, elem) => summon[Combiner[A]].combine(acc, elem))
+  private def combine[A: Combiner](a: Seq[A]): A =
+    a.foldLeft(summon[Combiner[A]].unit)((acc, elem) => summon[Combiner[A]].combine(acc, elem))
 
 /*
  * 2) To apply DRY principle at the best,
