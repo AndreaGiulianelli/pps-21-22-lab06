@@ -8,9 +8,13 @@ trait Functions:
   def max(a: List[Int]): Int // gives Int.MinValue if a is empty
 
 object FunctionsImpl extends Functions:
-  override def sum(a: List[Double]): Double = a.sum
-  override def concat(a: Seq[String]): String = a.foldLeft("")((acc, elem) => acc + elem)
-  override def max(a: List[Int]): Int = if a.isEmpty then Int.MinValue else a.max
+  import Combiners.given
+  override def sum(a: List[Double]): Double = combine(a)
+  override def concat(a: Seq[String]): String = combine(a)
+  override def max(a: List[Int]): Int = combine(a)
+  private def combine[A: Combiner](a: Seq[A]): A = a match
+    case Nil => summon[Combiner[A]].unit
+    case h :: t => t.foldLeft(h)((acc, elem) => summon[Combiner[A]].combine(acc, elem))
 
 /*
  * 2) To apply DRY principle at the best,
@@ -28,6 +32,17 @@ object FunctionsImpl extends Functions:
 trait Combiner[A]:
   def unit: A
   def combine(a: A, b: A): A
+
+object Combiners:
+  given sum: Combiner[Double] with
+    override def unit = 0
+    override def combine(a: Double, b: Double): Double = a + b
+  given concat: Combiner[String] with
+    override def unit = ""
+    override def combine(a: String, b: String): String = a + b
+  given max: Combiner[Int] with
+    override def unit = Int.MinValue
+    override def combine(a: Int, b: Int): Int = if a > b then a else b
 
 @main def checkFunctions(): Unit =
   val f: Functions = FunctionsImpl
