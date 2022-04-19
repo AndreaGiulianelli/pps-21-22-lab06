@@ -1,13 +1,12 @@
 package u06lab.solution
 
-import u06lab.solution.AbstractConnect.Connect
-import AbstractConnect.*
+import ConnectGame.*
 import Player.*
 import java.util.OptionalInt
 
 
 object ConnectThree extends App:
-  val connectTree = new Connect(4){}
+  val connectTree = Connect(4)
 
   // Exercise 1: implement find such that..
   println("EX 1: ")
