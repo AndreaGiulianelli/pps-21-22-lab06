@@ -35,7 +35,6 @@ trait NotTwoConsecutive[T] extends Parser[T]:
     case _ => prev = Some(t); super.parse(t)
   abstract override def end: Boolean = super.end
 
-
 class NotTwoConsecutiveParser(chars: Set[Char]) extends BasicParser(chars) with NotTwoConsecutive[Char]
 
 @main def checkParsers(): Unit =
