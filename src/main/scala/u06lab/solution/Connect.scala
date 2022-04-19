@@ -25,7 +25,7 @@ object AbstractConnect:
         y = firstAvailableRow(board, x)
         if !y.isEmpty
       yield
-        Disk(x, y.get, player) +:board
+        Disk(x, y.get, player) +: board
 
     def computeAnyGame(player: Player, moves: Int): LazyList[Game] = (moves match
       case 0 => LazyList[Game](List(List())) // LazyList[Game](List[Board](List[Disk](Disk, ...), ...), ...)
@@ -33,9 +33,9 @@ object AbstractConnect:
         for
           game <- computeAnyGame(player.other, moves - 1)
           lastBoard = game.head
-          nextBoard <- placeAnyDisk(lastBoard, player).reverse // reverse in order to have the same output sequence as described below
+          nextBoard <- placeAnyDisk(lastBoard, player).reverse // reverse in order to have the same output sequence as described below (it's optional)
         yield
-          if !isGameOver(lastBoard) then // if internal in the for won't work, why?
+          if !isGameOver(lastBoard) then
             nextBoard +: game
           else
             game).distinct
